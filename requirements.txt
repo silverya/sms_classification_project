@@ -1,0 +1,11 @@
+jupyter
+ipykernel
+pandas
+matplotlib
+streamlit
+numpy
+seaborn
+nltk
+scikit-learn
+wordcloud
+protobuf<=3.20.1
