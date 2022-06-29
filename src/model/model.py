@@ -36,6 +36,21 @@ def save_model(lgbm_model, filename):
         pickle.dump(lgbm_model, w)
         
         
-def predict():
+def predict(x, vect, nb):
+    x_dtm = vect.transform(x)
+    y_pred = nb.predict(x_dtm)
+    return y_pred        
+        
+        
+def test_predict(file_path, model_path, save_path):
+    test_df = pd.read_csv(file_path)
+    test_x = test_df['번역'].values
     
-        fdgdf = ''
+    with open(model_path, 'rb') as f:
+        vect, nb = pickle.load(f)
+    #vect, nb = pickle.loads(model_path)
+    
+    y_pred = predict(test_x, vect, nb)
+    test_df['분류'] = y_pred
+    
+    test_df.to_csv(save_path, index=False)

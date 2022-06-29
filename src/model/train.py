@@ -1,4 +1,5 @@
 from preprocessing.sms import SMSDataPreprocessingManager
+from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
 from model.model import *
 import argparse
 
@@ -25,6 +26,8 @@ if __name__ == "__main__":
     
     # evaluate model
     y_pred = evaluate_model(lgbm_model, X_test_tfidf)
+    
+    print(classification_report(y_test, y_pred, target_names=['ham', 'spam']))
     
 
     
