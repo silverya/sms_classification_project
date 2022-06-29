@@ -49,7 +49,7 @@ class SMSDataPreprocessingManager(PreprocessingManager):
     def remove_stopwords(
         self,
         df: pd.DataFrame,
-    ) -> None:
+    ):
 
         def fn(msg):
             STOPWORDS = stopwords.words('english') + \
@@ -63,30 +63,38 @@ class SMSDataPreprocessingManager(PreprocessingManager):
             return ' '.join([word for word in nopunc.split() if word.lower() not in STOPWORDS])
         
         df[self.feature_column_name] = df[self.feature_column_name].apply(lambda x: fn(x))
+        
+        return df
 
     def sentence_to_lowercase(
         self,
         df: pd.DataFrame,
-    ) -> None:
+    ):
       
         df[self.feature_column_name] = df[self.feature_column_name].apply(lambda x: x.lower())
+        
+        return df
 
     def text_cleansing(
         self,
         df: pd.DataFrame,
-    ) -> None:
+    ):
         
         df[self.feature_column_name] = df[self.feature_column_name].str.replace(self.regex_standard,'')
+        
+        return df
 
 
     def label_convert(
         self,
         df: pd.DataFrame
-    ) -> None:
+    ):
         
         df.loc[(df[self.label_column_name]==self.label_1), self.label_column_name] = 0
         df.loc[(df[self.label_column_name]==self.label_2), self.label_column_name] = 1
         df[self.label_column_name] = df[self.label_column_name].astype('float32')
+        
+        return df
         
     def split_data(
         self,
@@ -97,7 +105,6 @@ class SMSDataPreprocessingManager(PreprocessingManager):
         X_train, X_test, y_train, y_test = train_test_split(df[self.feature_column_name] ,df[self.label_column_name], test_size=ratio, random_state=111, shuffle=True)
         
         return X_train, X_test, y_train, y_test    
-        
 
     def get_tfidf(
         self,
@@ -105,7 +112,6 @@ class SMSDataPreprocessingManager(PreprocessingManager):
         X_train_dtm: np.ndarray,
         X_test_dtm: np.ndarray        
     ):
- 
         tfidf_vec = TfidfVectorizer(dtype=np.float32, sublinear_tf=True, use_idf=True, smooth_idf=True)
         X_data_tfidf = tfidf_vec.fit_transform(df[self.feature_column_name])
         X_train_tfidf = tfidf_vec.transform(X_train_dtm)
@@ -117,4 +123,13 @@ class SMSDataPreprocessingManager(PreprocessingManager):
         self,
         df: pd.DataFrame
     ): 
+        df = SMSDataPreprocessingManager.label_convert(df)
+        df = SMSDataPreprocessingManager.sentence_to_lowercase(df)
+        df = SMSDataPreprocessingManager.text_cleansing(df)
+        df = SMSDataPreprocessingManager.remove_stopwords(df)
+        
+        X_train, X_test, y_train, y_test = SMSDataPreprocessingManager.split_data(df)
+        X_data_tfidf, X_train_tfidf, X_test_tfidf = SMSDataPreprocessingManager.get_tfidf(df, X_train, X_test)
+        
+        return X_data_tfidf, X_train_tfidf, X_test_tfidf, y_train, y_test
         
