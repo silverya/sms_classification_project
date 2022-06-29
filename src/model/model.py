@@ -48,7 +48,6 @@ def test_predict(file_path, model_path, save_path):
     
     with open(model_path, 'rb') as f:
         vect, nb = pickle.load(f)
-    #vect, nb = pickle.loads(model_path)
     
     y_pred = predict(test_x, vect, nb)
     test_df['분류'] = y_pred
