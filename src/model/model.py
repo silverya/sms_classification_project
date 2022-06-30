@@ -44,6 +44,7 @@ def predict(x, vect, nb):
         
 def test_predict(file_path, model_path, save_path):
     test_df = pd.read_csv(file_path)
+    
     test_x = test_df['번역'].values
     
     with open(model_path, 'rb') as f:

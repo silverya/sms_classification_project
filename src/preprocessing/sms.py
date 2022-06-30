@@ -23,7 +23,7 @@ class SMSDataPreprocessingManager(PreprocessingManager):
         label_2: str = 'spam',
         regex_standard: str = '\(?(http|https|ftp|ftps)?\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?\)?|\d{2,3}-?\d{3,4}-?\d{4}|([\w\.-]+)@([\w\.-]+)(\.[\w\.]+)'
     ) -> None:
-        super().__init__(feature_column_name, label_column_name, regex_standard)
+        super().__init__(feature_column_name, label_column_name, regex_standard,label_1, label_2)
         
         
     def read_sample_data(
@@ -119,6 +119,7 @@ class SMSDataPreprocessingManager(PreprocessingManager):
         
         return X_data_tfidf, X_train_tfidf, X_test_tfidf
     
+    
     def data_preprocess(
         self,
         df: pd.DataFrame
@@ -133,3 +134,7 @@ class SMSDataPreprocessingManager(PreprocessingManager):
         
         return X_data_tfidf, X_train_tfidf, X_test_tfidf, y_train, y_test
         
+    def test_data_preprocess(
+        self,
+        
+    )    
